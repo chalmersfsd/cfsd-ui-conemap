@@ -15,7 +15,7 @@
 
 cmake_minimum_required(VERSION 3.9)
 
-project(opendlv-ui-object)
+project(cfsd-ui-conemap)
 
 set(CLUON_COMPLETE cluon-complete-v0.0.114.hpp)
 

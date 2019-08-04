@@ -33,4 +33,4 @@ WORKDIR /usr/bin
 COPY --from=builder /tmp/dest /usr
 COPY http /srv/http
 
-CMD ["/usr/bin/opendlv-ui-object"]
+CMD ["/usr/bin/cfsd-ui-conemap"]
