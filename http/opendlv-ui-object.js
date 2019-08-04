@@ -11,6 +11,10 @@ let currentFrameId;
 let collectedLocalObjects = {};
 let readyLocalObjects = {};
 
+let xCur = 0;
+let yCur = 0;
+let xPrev = 0;
+let yPrev = 0;
 
 window.onload = function (evt) {
   initMap();
@@ -175,7 +179,7 @@ function dataIn(data) {
     if (frameId == currentFrameId) {
       readyLocalObjects = collectedLocalObjects;
       drawObjects2dView();
-      collectedLocalObjects = {};
+      // collectedLocalObjects = {};
     }
   }
   if (d.dataType == 1130) {  // Object
@@ -194,8 +198,12 @@ function dataIn(data) {
   }
   if (d.dataType == 1116) {  // Geolocation, but here used as coordinate offset for now
     // Cartesian position after transforming WGS84Position using the given WGS84Reference using Mercator projection
-    const x = d['opendlv_logic_sensation_Geolocation']['width'];  // 
-    const y = d['opendlv_logic_sensation_Geolocation']['height'];
+    if (xPrev != xCur) {
+      xPrev = xCur;
+      yPrev = yCur;
+    }
+    xCur = d['opendlv_logic_sensation_Geolocation']['latitude'];
+    yCur = d['opendlv_logic_sensation_Geolocation']['longitude'];
   }
   if (d.dataType == 1136) {  // ObjectPosition
     const objectId = d['opendlv_logic_perception_ObjectPosition']['objectId'];
@@ -207,9 +215,10 @@ function dataIn(data) {
       collectedLocalObjects[objectId] = {};
     }
 
+    const heading = Math.atan((yCur-yPrev)/(xCur-xPrev));
     collectedLocalObjects[objectId]["position"] = {};
-    collectedLocalObjects[objectId]["position"]["x"] = x;
-    collectedLocalObjects[objectId]["position"]["y"] = y;
+    collectedLocalObjects[objectId]["position"]["x"] = xCur + (x*Math.cos(heading) - y*Math.sin(heading));
+    collectedLocalObjects[objectId]["position"]["y"] = yCur + (x*Math.sin(heading) + y*Math.cos(heading));
     collectedLocalObjects[objectId]["position"]["z"] = z;
   }
 

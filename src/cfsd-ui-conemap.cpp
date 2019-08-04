@@ -23,8 +23,6 @@
 #include <json.hpp>
 
 #include "cluon-complete.hpp"
-#include "opendlv-standard-message-set.hpp"
-#include "WGS84toCartesian.hpp"
 
 #include "opendlv-ui-server/http-request.hpp"
 #include "opendlv-ui-server/http-response.hpp"
@@ -156,28 +154,6 @@ int32_t main(int32_t argc, char **argv)
         }
       });
     ws.setDataReceiveDelegate(dataReceivedDelegate);
-
-    std::array<double, 2> refGPS;
-    bool atStart = true;
-    auto onGeodeticWgs84Reading{[&od4, &refGPS, &atStart, &VERBOSE](cluon::data::Envelope &&envelope) {
-      opendlv::proxy::GeodeticWgs84Reading msg = cluon::extractMessage<opendlv::proxy::GeodeticWgs84Reading>(std::move(envelope));
-      if (atStart) {
-        refGPS[0] = msg.latitude();
-        refGPS[1] = msg.longitude();
-        atStart = false;
-        if (VERBOSE) std::cout << "At start WGS84 (" << refGPS[0] << ", " << refGPS[1] << ")." << std::endl;
-      }
-      else {
-        std::array<double, 2> curGPS{msg.latitude(), msg.longitude()};
-        auto c = wgs84::toCartesian(refGPS, curGPS);
-        opendlv::logic::sensation::Geolocation cartesianPos;
-        cartesianPos.latitude(c[0]);
-        cartesianPos.longitude(c[1]);
-        od4.send(cartesianPos, cluon::time::now(), 0);
-        if (VERBOSE) std::cout << "Send out cartesian coordinates (" << c[0] << ", " << c[1] << ")." << std::endl; 
-      }
-    }};
-    od4.dataTrigger(opendlv::proxy::GeodeticWgs84Reading::ID(), onGeodeticWgs84Reading);
 
     while (od4.isRunning()) {
       ws.stepServer();
