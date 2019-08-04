@@ -18,6 +18,7 @@ cmake_minimum_required(VERSION 3.9)
 project(opendlv-ui-object)
 
 set(CLUON_COMPLETE cluon-complete-v0.0.114.hpp)
+set(OPENDLV_STANDARD_MESSAGE_SET opendlv-standard-message-set-v0.9.10.odvd)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

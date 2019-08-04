@@ -48,10 +48,10 @@ function clear2dView() {
 
   ctx.clearRect(0, 0, w, h);
 
-  ctx.beginPath();
-  ctx.moveTo(w / 2, 0);
-  ctx.lineTo(w / 2, h);
-  ctx.stroke(); 
+  // ctx.beginPath();
+  // ctx.moveTo(w / 2, 0);
+  // ctx.lineTo(w / 2, h);
+  // ctx.stroke(); 
 }
 
 function drawObjects2dView() {
@@ -173,8 +173,8 @@ function dataIn(data) {
     const frameId = d['opendlv_logic_perception_ObjectFrameEnd']['objectFrameId'];
     console.log("Frame end " + frameId);
     if (frameId == currentFrameId) {
-      drawObjects2dView();
       readyLocalObjects = collectedLocalObjects;
+      drawObjects2dView();
       collectedLocalObjects = {};
     }
   }
@@ -191,6 +191,11 @@ function dataIn(data) {
     }
 
     collectedLocalObjects[objectId]["type"] = type;
+  }
+  if (d.dataType == 1116) {  // Geolocation, but here used as coordinate offset for now
+    // Cartesian position after transforming WGS84Position using the given WGS84Reference using Mercator projection
+    const x = d['opendlv_logic_sensation_Geolocation']['width'];  // 
+    const y = d['opendlv_logic_sensation_Geolocation']['height'];
   }
   if (d.dataType == 1136) {  // ObjectPosition
     const objectId = d['opendlv_logic_perception_ObjectPosition']['objectId'];
