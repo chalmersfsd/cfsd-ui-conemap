@@ -198,12 +198,17 @@ function dataIn(data) {
   }
   if (d.dataType == 1116) {  // Geolocation, but here used as coordinate offset for now
     // Cartesian position after transforming WGS84Position using the given WGS84Reference using Mercator projection
+<<<<<<< HEAD
     if (xPrev != xCur) {
       xPrev = xCur;
       yPrev = yCur;
     }
     xCur = d['opendlv_logic_sensation_Geolocation']['latitude'];
     yCur = d['opendlv_logic_sensation_Geolocation']['longitude'];
+=======
+    const x = d['opendlv_logic_sensation_Geolocation']['latitude'];
+    const y = d['opendlv_logic_sensation_Geolocation']['longitude'];
+>>>>>>> c23a37284f14a64fca510aef68bfffed235f185f
   }
   if (d.dataType == 1136) {  // ObjectPosition
     const objectId = d['opendlv_logic_perception_ObjectPosition']['objectId'];
